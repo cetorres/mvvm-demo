@@ -9,9 +9,9 @@ import UIKit
 
 class MainViewController: UITableViewController {
     
-    var projects = [Project]()
-    var recentProjects = [Project]()
-    var teams = [Team]()
+    let viewModel = MainViewModel()
+    var viewData = [ViewData]()
+    
     let activityIndicator = UIActivityIndicatorView()
     var isInitialLoad = true
     
@@ -36,85 +36,30 @@ class MainViewController: UITableViewController {
         activityIndicator.hidesWhenStopped = true
         activityIndicator.startAnimating()
                 
-        // Load projects
-        loadProjects()
-    }
-    
-    private func loadProjects() {
-        ProjectsService.shared.getProjectsAndTeams { [weak self] result in
-            switch result {
-            case .failure(let error):
-                DispatchQueue.main.async {
-                    self?.showAlert(title: "Error", message: "\(ERROR_COULD_NOT_LOAD_DATA) \(error.localizedDescription)")
-                }
-            case .success(let results):
-                if let projects = results["projects"] as? [Project] {
-                    self?.projects = projects
-                }
-                if let teams = results["teams"] as? [Team] {
-                    self?.teams = teams
-                }
-                
-                self?.isInitialLoad = false
-                
-                self?.loadRecentProjects()
-            }
-                                    
-            DispatchQueue.main.async {
-                self?.tableView.reloadData()
-                self?.tableView.refreshControl?.endRefreshing()
-                self?.activityIndicator.stopAnimating()
-            }
-        }
-    }
-    
-    private func loadRecentProjects() {
-        recentProjects.removeAll()
-        
-        // Apply rules for recent project
-        if (projects.count > RECENT_PROJECTS_RULE["LOW"]! && projects.count < RECENT_PROJECTS_RULE["HIGH"]!) {
-            let recentTotal = projects.count - RECENT_PROJECTS_RULE["SHOW"]!
-            for i in 0..<recentTotal {
-                recentProjects.append(projects[i])
-            }
-        }
-        else if (projects.count >= RECENT_PROJECTS_RULE["HIGH"]!) {
-            let recentTotal = RECENT_PROJECTS_RULE["SHOW"]!
-            for i in 0..<recentTotal {
-                recentProjects.append(projects[i])
-            }
-        }
+        // View model delegate
+        viewModel.delegate = self
     }
 
     @objc func refreshData() {
-        loadProjects()
+        viewModel.reloadProjects()
     }
 
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return teams.count + 1
+        return viewData.count
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // Recent
-        if (section == 0) {
-            return recentProjects.count
-        }
-        // Teams
-        let team = teams[section-1]
-        let teamProjects = projects.filter { $0.team.id == team.id }
-        return teamProjects.count
+        viewData[section].viewItems.count
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if isInitialLoad {
             return nil
         }
-        if section == 0 {
-            return RECENT_SECTION_TITLE
-        }
-        return teams[section-1].name
+
+        return viewData[section].sectionTitle
     }
     
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
@@ -136,7 +81,7 @@ class MainViewController: UITableViewController {
         if isInitialLoad {
             return 0
         }
-        if (section == 0 && recentProjects.count <= 0) {
+        if (section == 0 && viewData[0].sectionTitle == RECENT_SECTION_TITLE && viewData[0].viewItems.count <= 0) {
             return 50
         }
         return 0
@@ -147,25 +92,14 @@ class MainViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "Cell")
         
-        // Recent
-        if (indexPath.section == 0) {
-            let recentProject = recentProjects[indexPath.row]
-
-            cell.textLabel?.text = recentProject.name
-            cell.textLabel?.numberOfLines = 0
-
-            cell.detailTextLabel?.text = recentProject.team.name
+        let viewItem = viewData[indexPath.section].viewItems[indexPath.row]
+        
+        cell.textLabel?.text = viewItem.projectName
+        cell.textLabel?.numberOfLines = 0
+        
+        if let teamName = viewItem.teamName {
+            cell.detailTextLabel?.text = teamName
             cell.detailTextLabel?.numberOfLines = 0
-        }
-        // Teams
-        else {
-            let team = teams[indexPath.section-1]
-            let teamProjects = projects.filter { $0.team.id == team.id }
-            
-            let project = teamProjects[indexPath.row]
-                 
-            cell.textLabel?.text = project.name
-            cell.textLabel?.numberOfLines = 0
         }
         
         return cell
@@ -176,3 +110,18 @@ class MainViewController: UITableViewController {
     }
 }
 
+extension MainViewController: MainViewModelDelegate {
+    func loadViewDataError(error: String) {
+        showAlert(title: "Error", message: error)
+    }
+    
+    func viewDataLoaded(viewData: [ViewData]) {
+        self.viewData = viewData
+        
+        self.isInitialLoad = false
+        
+        self.tableView.reloadData()
+        self.tableView.refreshControl?.endRefreshing()
+        self.activityIndicator.stopAnimating()
+    }
+}
