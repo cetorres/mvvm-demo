@@ -1,6 +1,7 @@
 # MVVM Demo
 Simple iOS app I created to demo the MVVM design pattern. It makes a request to a REST API and shows the data in a tableview with sections based on the data and a business logic.
-It implements concepts of network requests to a REST API, data serialization, delegates (protocols), services, async/non-blocking programming and others.
+
+It implements concepts of network requests to a REST API, JSON data serialization into models, delegates (protocols), services, async/non-blocking programming and others.
 
 Created using Swift, UIKit and CocoaPods.
 
