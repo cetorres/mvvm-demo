@@ -35,7 +35,7 @@ class MainViewController: UITableViewController {
         activityIndicator.startAnimating()
                 
         // View model delegate
-        viewModel.delegate = self
+        viewModel.delegate = self            
     }
 
     @objc func refreshData() {
@@ -124,5 +124,11 @@ extension MainViewController: MainViewModelDelegate {
         self.tableView.reloadData()
         self.tableView.refreshControl?.endRefreshing()
         self.activityIndicator.stopAnimating()
+    }
+    
+    func internetConnection(connected: Bool, type: NetworkMonitor.ConnectionType, status: NetworkMonitor.ConnectionStatus) {
+        if !connected {
+            showAlert(title: "Network Error", message: "No internet connection detected.")
+        }
     }
 }

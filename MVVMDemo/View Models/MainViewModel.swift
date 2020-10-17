@@ -10,6 +10,7 @@ import Foundation
 protocol MainViewModelDelegate: AnyObject {
     func loadViewDataError(error: String)
     func viewDataLoaded()
+    func internetConnection(connected: Bool, type: NetworkMonitor.ConnectionType, status: NetworkMonitor.ConnectionStatus)
 }
 
 struct ViewData {
@@ -35,6 +36,7 @@ class MainViewModel {
     weak var delegate: MainViewModelDelegate?
     
     init() {
+        monitorInternetConnection()
         loadProjects()
     }
     
@@ -98,5 +100,13 @@ class MainViewModel {
         
         self.viewData = viewData        
         delegate?.viewDataLoaded()
+    }
+    
+    private func monitorInternetConnection() {
+        NetworkMonitor.shared.networkUpdateHandler = { [weak self] connected, type, status in
+            DispatchQueue.main.async {
+                self?.delegate?.internetConnection(connected: connected, type: type, status: status)
+            }                       
+        }
     }
 }

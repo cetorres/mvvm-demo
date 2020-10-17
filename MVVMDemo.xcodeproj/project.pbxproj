@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6B3CEBF8253B4E540049959C /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B3CEBF7253B4E540049959C /* NetworkMonitor.swift */; };
 		6B5ED18F251CFBAA00DE267D /* Team.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B5ED18E251CFBAA00DE267D /* Team.swift */; };
 		6B5ED194251CFC3000DE267D /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B5ED193251CFC3000DE267D /* Project.swift */; };
 		6B5ED199251CFE6700DE267D /* ProjectsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B5ED198251CFE6700DE267D /* ProjectsService.swift */; };
@@ -40,6 +41,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6B3CEBF7253B4E540049959C /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		6B5ED18E251CFBAA00DE267D /* Team.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Team.swift; sourceTree = "<group>"; };
 		6B5ED193251CFC3000DE267D /* Project.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project.swift; sourceTree = "<group>"; };
 		6B5ED198251CFE6700DE267D /* ProjectsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectsService.swift; sourceTree = "<group>"; };
@@ -89,6 +91,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6B3CEBFC253B4E580049959C /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				6B3CEBF7253B4E540049959C /* NetworkMonitor.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		6B8BD6A8251CEB7C0086159D = {
 			isa = PBXGroup;
 			children = (
@@ -120,6 +130,7 @@
 				6BC2D95F252F7BC5009388CD /* View Models */,
 				6B8BD6F1251CEC730086159D /* View Controllers */,
 				6B8BD6EE251CEC5B0086159D /* Extensions */,
+				6B3CEBFC253B4E580049959C /* Utils */,
 				6B8BD6F2251CEC8A0086159D /* Support */,
 				6B8BD6BD251CEB7F0086159D /* Assets.xcassets */,
 			);
@@ -377,6 +388,7 @@
 				6B5ED199251CFE6700DE267D /* ProjectsService.swift in Sources */,
 				6B8BD6B7251CEB7C0086159D /* SceneDelegate.swift in Sources */,
 				6B5ED194251CFC3000DE267D /* Project.swift in Sources */,
+				6B3CEBF8253B4E540049959C /* NetworkMonitor.swift in Sources */,
 				6B8BD705251CF1220086159D /* AppConstants.swift in Sources */,
 				6BC2D961252F7BF1009388CD /* MainViewModel.swift in Sources */,
 			);
